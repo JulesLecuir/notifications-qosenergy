@@ -84,33 +84,21 @@ const SettingsPage = () => (
 
     {/* Different notifications classes */}
     <NotificationsList
-      title="Ticket opened"
-      subtitle="Notify people when a new ticket is created."
-      type="ticket.opened"
+      title="Tickets"
+      subtitle="Notify people when a new ticket is opened or closed."
+      type="ticket"
     />
     <Divider sx={{my: 3}} />
     <NotificationsList
-      title="Ticket closed"
-      subtitle="Notify people when a new ticket is closed."
-      type="ticket.closed"
-    />
-    <Divider sx={{my: 3}} />
-    <NotificationsList
-      title="Event started"
-      subtitle="Notify people when a new event starts."
-      type="event.started"
-    />
-    <Divider sx={{my: 3}} />
-    <NotificationsList
-      title="Event ended"
-      subtitle="Notify people when an event ends."
-      type="event.ended"
+      title="Events"
+      subtitle="Notify people of when an event starts or ends."
+      type="event"
     />
     <Divider sx={{my: 3}} />
     <NotificationsList
       title="Data export ready"
       subtitle="Notify people when a data export is ready to be downloaded."
-      type="data.exportReady"
+      type="exports"
     />
   </>
 );

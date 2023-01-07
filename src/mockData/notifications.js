@@ -13,11 +13,45 @@ export const contactChannels = [
   {value: "sms", title: "SMS", icon: SmsOutlinedIcon},
 ];
 
+export const notificationEvents = {
+  ticket: [
+    {value: "open", title: "Send a notification on ticket open", text: "On open"},
+    {value: "close", title: "Send a notification on ticket close", text: "On close"},
+  ],
+  event: [
+    {value: "start", title: "Send a notification when an event starts", text: "On start"},
+    {value: "end", title: "Send a notification when an event ends", text: "On end"},
+  ],
+};
+
 export const notificationSettings = [
   {
     _id: makeRandomId(),
     name: "Downtime ops",
-    type: "ticket.opened",
+    type: "ticket",
+    description: "Small description to remember what the notification was made for.",
+    active: true,
+    filters: {
+      priority: 3,
+      contains: "down",
+    },
+    contactChannels: {
+      roles: {
+        creator: ["push", "desktop", "email", "sms"],
+        tagged: ["push", "desktop"],
+        subscribers: ["push", "desktop", "email", "sms"],
+        assignees: ["push", "desktop", "email", "sms"],
+      },
+      custom: {
+        email: "truc@machin.com, personne@exterieur.eu",
+      },
+    },
+    scopes: [organizationStructure[0].children[1].key, organizationStructure[2].children[2].key],
+  },
+  {
+    _id: makeRandomId(),
+    name: "Downtime ops",
+    type: "ticket",
     description: "Small description to remember what the notification was made for.",
     active: true,
     filters: {

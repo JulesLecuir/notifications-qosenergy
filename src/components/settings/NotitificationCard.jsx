@@ -32,7 +32,7 @@ import TreeItem from "@mui/lab/TreeItem";
 import IconButton from "@mui/joy/IconButton";
 
 import {organizationStructure, organizationRoles} from "../../mockData/organization.js";
-import {contactChannels} from "../../mockData/notifications.js";
+import {contactChannels, notificationEvents} from "../../mockData/notifications.js";
 import {CardDivider, CardSubtitle, DiscoverableTextField} from "../base/atoms.jsx";
 
 const MuiTree = ({label, name, value, setFieldValue}) => {
@@ -77,16 +77,17 @@ const AntdTree = ({label, name, value, setFieldValue}) => {
   );
 };
 
-const ContactChannelsButtons = ({name, value, setFieldValue}) => (
+const ToggleButtons = ({options, name, value, setFieldValue}) => (
   <ToggleButtonGroup
     size="small"
     color="primary"
     name={name}
     value={value}
     onChange={(_, value) => setFieldValue(name, value)}>
-    {contactChannels.map(({value, title, icon: Icon}) => (
+    {options.map(({value, title, icon: Icon, text}) => (
       <ToggleButton value={value} title={title}>
-        <Icon />
+        {Icon && <Icon />}
+        {text}
       </ToggleButton>
     ))}
   </ToggleButtonGroup>
@@ -240,6 +241,18 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
             </Grid>
             <Grid lg={6} xs={12}>
               <Stack spacing={3}>
+                {notificationEvents[notification.type]?.length > 0 && (
+                  <Stack direction="row" spacing={3}>
+                    <FormLabel>Trigger a notification...</FormLabel>
+                    <ToggleButtons
+                      options={notificationEvents[notification.type]}
+                      value={values.filters.events}
+                      name="filters.events"
+                      setFieldValue={setFieldValue}
+                    />
+                  </Stack>
+                )}
+
                 {sliderField && (
                   <FormControl sx={{pb: 2}}>
                     <FormLabel htmlFor="filters.priority">
@@ -278,7 +291,8 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
                 {organizationRoles.map((roleName, i) => (
                   <Stack direction="row" spacing={3} key={i}>
                     <FormLabel sx={{minWidth: 120}}>{roleName}</FormLabel>
-                    <ContactChannelsButtons
+                    <ToggleButtons
+                      options={contactChannels}
                       value={values.contactChannels.roles[roleName.toLowerCase()]}
                       name={`contactChannels.roles.${roleName.toLowerCase()}`}
                       setFieldValue={setFieldValue}

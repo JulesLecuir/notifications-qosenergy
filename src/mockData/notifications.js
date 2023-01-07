@@ -7,33 +7,34 @@ import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined.js";
 import React from "react";
 
 export const contactChannels = [
-  {value: "push", title: "Push notifications in the QOS Energy app", icon: PhoneAndroidIcon},
-  {value: "desktop", title: "Desktop notifications", icon: LaptopIcon},
-  {value: "email", title: "Emails", icon: EmailOutlinedIcon},
-  {value: "sms", title: "SMS", icon: SmsOutlinedIcon},
+  {key: "push", title: "Push ", icon: PhoneAndroidIcon},
+  {key: "desktop", title: "Desktop", icon: LaptopIcon},
+  {key: "email", title: "Emails", icon: EmailOutlinedIcon},
+  {key: "sms", title: "SMS", icon: SmsOutlinedIcon},
 ];
 
-export const notificationEvents = {
+export const notificationTriggers = {
   ticket: [
-    {value: "open", title: "Send a notification on ticket open", text: "On open"},
-    {value: "close", title: "Send a notification on ticket close", text: "On close"},
+    {key: "open", title: "Send a notification on ticket open", text: "On open"},
+    {key: "close", title: "Send a notification on ticket close", text: "On close"},
   ],
   event: [
-    {value: "start", title: "Send a notification when an event starts", text: "On start"},
-    {value: "end", title: "Send a notification when an event ends", text: "On end"},
+    {key: "start", title: "Send a notification when an event starts", text: "On start"},
+    {key: "end", title: "Send a notification when an event ends", text: "On end"},
   ],
 };
 
 export const notificationSettings = [
   {
     _id: makeRandomId(),
-    name: "Downtime ops",
+    name: "Support tickets",
     type: "ticket",
-    description: "Small description to remember what the notification was made for.",
+    description: "All incoming support tickets.",
     active: true,
     filters: {
       priority: 3,
-      contains: "down",
+      contains: "support",
+      triggers: ["open", "close"],
     },
     contactChannels: {
       roles: {
@@ -50,13 +51,14 @@ export const notificationSettings = [
   },
   {
     _id: makeRandomId(),
-    name: "Downtime ops",
-    type: "ticket",
-    description: "Small description to remember what the notification was made for.",
+    name: "Broken infrastructure",
+    type: "event",
+    description: "Notify people when anything is broken somewhere.",
     active: true,
     filters: {
       priority: 3,
-      contains: "down",
+      contains: "down, downtime, broken, not responding",
+      triggers: ["start"],
     },
     contactChannels: {
       roles: {
@@ -66,7 +68,7 @@ export const notificationSettings = [
         assignees: ["push", "desktop", "email", "sms"],
       },
       custom: {
-        email: "truc@machin.com, personne@exterieur.eu",
+        sms: "+33612345678, +33698754321",
       },
     },
     scopes: [organizationStructure[0].children[1].key, organizationStructure[2].children[2].key],

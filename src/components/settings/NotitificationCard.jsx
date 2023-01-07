@@ -1,7 +1,5 @@
 import React, {useState} from "react";
 import {useFormik} from "formik";
-import {useNotificationsStore} from "../../store.js";
-import {Tree} from "antd";
 
 // MUI
 import TextField from "@mui/joy/TextField";
@@ -16,8 +14,6 @@ import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Slider from "@mui/joy/Slider";
 import Collapse from "@mui/material/Collapse";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import ToggleButton from "@mui/material/ToggleButton";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined.js";
 import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined.js";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -25,73 +21,13 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import IntegrationInstructionsOutlinedIcon from "@mui/icons-material/IntegrationInstructionsOutlined";
 import Grid from "@mui/joy/Grid";
 import Link from "@mui/joy/Link";
-import TreeView from "@mui/lab/TreeView";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import TreeItem from "@mui/lab/TreeItem";
 import IconButton from "@mui/joy/IconButton";
 
+import {useNotificationsStore} from "../../store.js";
 import {organizationStructure, organizationRoles} from "../../mockData/organization.js";
-import {contactChannels, notificationEvents} from "../../mockData/notifications.js";
-import {CardDivider, CardSubtitle, DiscoverableTextField} from "../base/atoms.jsx";
-
-const MuiTree = ({label, name, value, setFieldValue}) => {
-  const writeNode = (node) => (
-    <TreeItem label={node.title} nodeId={node.key}>
-      {node.children?.map(writeNode)}
-    </TreeItem>
-  );
-
-  return (
-    <FormControl>
-      <FormLabel>{label}</FormLabel>
-      <Sheet variant="outlined" sx={{borderRadius: 2, p: 2, maxHeight: 400, overflow: "auto"}}>
-        <TreeView
-          aria-label="multi-select"
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
-          multiSelect
-          selected={value}
-          onNodeSelect={(_, selectedKeys) => setFieldValue(name, selectedKeys)}>
-          {organizationStructure.map(writeNode)}
-        </TreeView>
-      </Sheet>
-    </FormControl>
-  );
-};
-
-const AntdTree = ({label, name, value, setFieldValue}) => {
-  return (
-    <FormControl>
-      <FormLabel>{label}</FormLabel>
-      <Sheet variant="outlined" sx={{borderRadius: 2, p: 2, maxHeight: 400, overflow: "auto"}}>
-        <Tree
-          checkable
-          defaultExpandAll
-          checkedKeys={value}
-          onCheck={(checkedKeys) => setFieldValue(name, checkedKeys)}
-          treeData={organizationStructure}
-        />
-      </Sheet>
-    </FormControl>
-  );
-};
-
-const ToggleButtons = ({options, name, value, setFieldValue}) => (
-  <ToggleButtonGroup
-    size="small"
-    color="primary"
-    name={name}
-    value={value}
-    onChange={(_, value) => setFieldValue(name, value)}>
-    {options.map(({value, title, icon: Icon, text}) => (
-      <ToggleButton value={value} title={title}>
-        {Icon && <Icon />}
-        {text}
-      </ToggleButton>
-    ))}
-  </ToggleButtonGroup>
-);
+import {contactChannels, notificationTriggers} from "../../mockData/notifications.js";
+import {CardDivider, CardSubtitle} from "../base/atoms.jsx";
+import {AntdTree, MuiTree, ToggleChips, DiscoverableTextField} from "../base/inputs.jsx";
 
 const NotificationCard = ({notification, createMode = false, setCreateMode}) => {
   const {addNotification, updateNotification, removeNotification} = useNotificationsStore();
@@ -150,7 +86,7 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
         <Stack
           direction="row"
           alignItems="center"
-          spacing={2}
+          gap={2}
           {...(!createMode && {
             // Positive padding + negative margin to expand the clickable zone
             sx: {cursor: "pointer", p: 2, m: -2, flexGrow: 1},
@@ -173,7 +109,7 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
           )}
         </Stack>
         {/* Action buttons */}
-        <Stack direction={{xs: "column-reverse", sm: "row"}} alignItems="center" spacing={2}>
+        <Stack direction={{xs: "column-reverse", sm: "row"}} alignItems="center" gap={2}>
           {!createMode && (
             <Switch
               checked={notification.active}
@@ -187,7 +123,7 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
           )}
           <ChipDelete
             color="danger"
-            variant="outlined"
+            variant="soft"
             title="Delete the notification"
             onClick={() =>
               createMode ? setCreateMode(false) : removeNotification(notification._id)
@@ -227,12 +163,14 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
           <Grid container columnSpacing={8} rowSpacing={3}>
             <Grid lg={6} xs={12}>
               <AntdTree
+                options={organizationStructure}
                 setFieldValue={setFieldValue}
                 label="Notification scopes"
                 name="scopes"
                 value={values.scopes}
               />
               {/*<MuiTree*/}
+              {/*  options={organizationStructure}*/}
               {/*  setFieldValue={setFieldValue}*/}
               {/*  label="Notification scopes"*/}
               {/*  name="scopes"*/}
@@ -240,14 +178,14 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
               {/*/>*/}
             </Grid>
             <Grid lg={6} xs={12}>
-              <Stack spacing={3}>
-                {notificationEvents[notification.type]?.length > 0 && (
-                  <Stack direction="row" spacing={3}>
+              <Stack gap={3}>
+                {notificationTriggers[notification.type]?.length > 0 && (
+                  <Stack direction="row" gap={3}>
                     <FormLabel>Trigger a notification...</FormLabel>
-                    <ToggleButtons
-                      options={notificationEvents[notification.type]}
-                      value={values.filters.events}
-                      name="filters.events"
+                    <ToggleChips
+                      options={notificationTriggers[notification.type]}
+                      value={values.filters.triggers}
+                      name="filters.triggers"
                       setFieldValue={setFieldValue}
                     />
                   </Stack>
@@ -287,11 +225,11 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
           <Grid container columnSpacing={8} rowSpacing={3}>
             <Grid lg={6} xs={12}>
               <CardSubtitle>Contact channels</CardSubtitle>
-              <Stack spacing={3}>
+              <Stack gap={3}>
                 {organizationRoles.map((roleName, i) => (
-                  <Stack direction="row" spacing={3} key={i}>
-                    <FormLabel sx={{minWidth: 120}}>{roleName}</FormLabel>
-                    <ToggleButtons
+                  <Stack direction="row" gap={3} key={i}>
+                    <FormLabel sx={{minWidth: 100}}>{roleName}</FormLabel>
+                    <ToggleChips
                       options={contactChannels}
                       value={values.contactChannels.roles[roleName.toLowerCase()]}
                       name={`contactChannels.roles.${roleName.toLowerCase()}`}
@@ -303,7 +241,7 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
             </Grid>
             <Grid lg={6} xs={12}>
               <CardSubtitle>More channels</CardSubtitle>
-              <Stack spacing={3}>
+              <Stack gap={3}>
                 <DiscoverableTextField
                   startDecorator={<EmailOutlinedIcon />}
                   discoverFieldLabel="Add additional emails"

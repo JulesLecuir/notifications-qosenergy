@@ -76,11 +76,12 @@ export const ToggleChips = ({options, name, value, setFieldValue}) => {
   // https://mui.com/joy-ui/react-chip/#with-a-checkbox
   return (
     <Stack direction="row" columnGap={2} rowGap={1} flexWrap="wrap">
-      {options.map(({key, title, icon: Icon, text}) => {
+      {options.map(({key, label, title, icon: Icon}) => {
         const checked = value?.includes(key);
         return (
           <Chip
             key={key}
+            title={title}
             variant={checked ? "soft" : "plain"}
             color={checked ? "primary" : "neutral"}
             startDecorator={Icon && <Icon />}>
@@ -88,7 +89,7 @@ export const ToggleChips = ({options, name, value, setFieldValue}) => {
               variant="outlined"
               disableIcon
               overlay
-              label={text || title}
+              label={label}
               checked={checked}
               onChange={(event) =>
                 setFieldValue(

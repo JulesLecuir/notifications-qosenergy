@@ -23,7 +23,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
 
 // Custom
-import Layout from "./components/Layout";
+import Layout from "./components/base/Layout";
 import SettingsPage from "./components/settings";
 
 function ColorSchemeToggle() {

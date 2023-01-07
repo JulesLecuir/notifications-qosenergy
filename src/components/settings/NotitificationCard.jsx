@@ -25,13 +25,15 @@ import IconButton from "@mui/joy/IconButton";
 
 import {useNotificationsStore} from "../../store.js";
 import {organizationStructure, organizationRoles} from "../../mockData/organization.js";
-import {contactChannels, notificationTriggers} from "../../mockData/notifications.js";
+import {contactChannels, notificationsOptions} from "../../mockData/notifications.js";
 import {CardDivider, CardSubtitle} from "../base/atoms.jsx";
 import {AntdTree, MuiTree, ToggleChips, DiscoverableTextField} from "../base/inputs.jsx";
 
 const NotificationCard = ({notification, createMode = false, setCreateMode}) => {
   const {addNotification, updateNotification, removeNotification} = useNotificationsStore();
   const [expanded, setExpanded] = useState(createMode);
+
+  const {triggers, priorityField} = notificationsOptions[notification.type];
 
   // https://formik.org/docs/examples/with-material-ui
   const {handleSubmit, handleChange, values, setFieldValue, dirty} = useFormik({
@@ -46,29 +48,6 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
       }
     },
   });
-
-  // define the slider field options if there is a need to.
-  const sliderField = notification.type.includes("event")
-    ? {
-        name: "criticality",
-        marks: [
-          {value: 1, label: "Low"},
-          {value: 2, label: "Medium"},
-          {value: 3, label: "High"},
-          {value: 4, label: "Critical"},
-        ],
-      }
-    : notification.type.includes("ticket")
-    ? {
-        name: "priority",
-        marks: [
-          {value: 1, label: "Low"},
-          {value: 2, label: "Medium"},
-          {value: 3, label: "Major"},
-          {value: 4, label: "High"},
-        ],
-      }
-    : false;
 
   return (
     <Sheet
@@ -179,11 +158,11 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
             </Grid>
             <Grid lg={6} xs={12}>
               <Stack gap={3}>
-                {notificationTriggers[notification.type]?.length > 0 && (
+                {triggers?.length > 0 && (
                   <Stack direction="row" gap={3}>
                     <FormLabel>Trigger a notification...</FormLabel>
                     <ToggleChips
-                      options={notificationTriggers[notification.type]}
+                      options={triggers}
                       value={values.filters.triggers}
                       name="filters.triggers"
                       setFieldValue={setFieldValue}
@@ -191,30 +170,30 @@ const NotificationCard = ({notification, createMode = false, setCreateMode}) => 
                   </Stack>
                 )}
 
-                {sliderField && (
+                {priorityField && (
                   <FormControl sx={{pb: 2}}>
                     <FormLabel htmlFor="filters.priority">
-                      With a minimum {sliderField.name} of...
+                      With a minimum {priorityField.name} of...
                     </FormLabel>
                     <Slider
                       sx={{width: "calc(100% - 4rem)", alignSelf: "center"}}
-                      name={`filters.${sliderField.name}`}
-                      value={values.filters[sliderField.name]}
+                      name={`filters.${priorityField.name}`}
+                      value={values.filters[priorityField.name]}
                       onChange={handleChange}
                       step={1}
                       min={1}
                       max={4}
                       valueLabelDisplay="off"
-                      marks={sliderField.marks}
+                      marks={priorityField.scale}
                     />
                   </FormControl>
                 )}
 
                 <TextField
-                  label="Containing at least one of the following tags..."
-                  placeholder="enter tags spaced with a comma..."
-                  name="filters.contains"
-                  value={values.filters.contains}
+                  label="Containing at least one of the following keywords..."
+                  placeholder="enter keywords separated with a comma..."
+                  name="filters.keywords"
+                  value={values.filters.keywords}
                   onChange={handleChange}
                 />
               </Stack>

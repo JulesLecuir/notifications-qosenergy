@@ -6,23 +6,49 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined.js";
 import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined.js";
 import React from "react";
 
-export const contactChannels = [
-  {key: "push", title: "Push ", icon: PhoneAndroidIcon},
-  {key: "desktop", title: "Desktop", icon: LaptopIcon},
-  {key: "email", title: "Emails", icon: EmailOutlinedIcon},
-  {key: "sms", title: "SMS", icon: SmsOutlinedIcon},
-];
-
-export const notificationTriggers = {
-  ticket: [
-    {key: "open", title: "Send a notification on ticket open", text: "On open"},
-    {key: "close", title: "Send a notification on ticket close", text: "On close"},
-  ],
-  event: [
-    {key: "start", title: "Send a notification when an event starts", text: "On start"},
-    {key: "end", title: "Send a notification when an event ends", text: "On end"},
-  ],
+export const notificationsOptions = {
+  ticket: {
+    triggers: [
+      {key: "open", title: "Send a notification on ticket open", label: "On open"},
+      {key: "close", title: "Send a notification on ticket close", label: "On close"},
+    ],
+    priorityField: {
+      name: "priority",
+      scale: [
+        {value: 1, label: "Low"},
+        {value: 2, label: "Medium"},
+        {value: 3, label: "Major"},
+        {value: 4, label: "High"},
+      ],
+    },
+  },
+  event: {
+    triggers: [
+      {key: "start", title: "Send a notification when an event starts", label: "On start"},
+      {key: "end", title: "Send a notification when an event ends", label: "On end"},
+    ],
+    priorityField: {
+      name: "criticality",
+      scale: [
+        {value: 1, label: "Low"},
+        {value: 2, label: "Medium"},
+        {value: 3, label: "High"},
+        {value: 4, label: "Critical"},
+      ],
+    },
+  },
+  export: {
+    triggers: null,
+    priorityField: null,
+  },
 };
+
+export const contactChannels = [
+  {key: "push", label: "Push ", icon: PhoneAndroidIcon},
+  {key: "desktop", label: "Desktop", icon: LaptopIcon},
+  {key: "email", label: "Emails", icon: EmailOutlinedIcon},
+  {key: "sms", label: "SMS", icon: SmsOutlinedIcon},
+];
 
 export const notificationSettings = [
   {
@@ -33,7 +59,7 @@ export const notificationSettings = [
     active: true,
     filters: {
       priority: 3,
-      contains: "support",
+      keywords: "support",
       triggers: ["open", "close"],
     },
     contactChannels: {
@@ -57,7 +83,7 @@ export const notificationSettings = [
     active: true,
     filters: {
       priority: 3,
-      contains: "down, downtime, broken, not responding",
+      keywords: "down, downtime, broken, not responding",
       triggers: ["start"],
     },
     contactChannels: {

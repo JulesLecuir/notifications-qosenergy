@@ -98,7 +98,7 @@ const SettingsPage = () => (
     <NotificationsList
       title="Data export ready"
       subtitle="Notify people when a data export is ready to be downloaded."
-      type="exports"
+      type="export"
     />
   </>
 );
